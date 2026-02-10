@@ -1,16 +1,23 @@
-## Honeypot Starter Template
+## SSH Honeypot
 
-This directory is a starter template for the honeypot portion of the assignment.
+Fake SSH server that logs all connection attempts including source IPs, client banners, data sent, and connection duration.
 
-### What you need to implement
-- Choose a protocol (SSH, HTTP, or multi-protocol).
-- Simulate a convincing service banner and responses.
-- Log connection metadata, authentication attempts, and attacker actions.
-- Store logs under `logs/` and include an `analysis.md` summary.
-- Update `honeypot.py` and `logger.py` (and add modules as needed) to implement the honeypot.
+### How it works
+1. Binds to port 22 and sends a realistic OpenSSH 8.9p1 banner
+2. Accepts connections and reads client data across multiple rounds
+3. Logs everything to `logs/connections.jsonl` as structured JSON
+4. Each connection handled in its own thread
 
-### Getting started
-1. Implement your honeypot logic in `honeypot.py`.
-2. Wire logging in `logger.py` and record results in `logs/`.
-3. Summarize your findings in `analysis.md`.
-4. Run from the repo root with `docker-compose up honeypot`.
+### Usage
+```bash
+# Run via docker compose
+docker compose up honeypot
+
+# Test attacks
+ssh admin@localhost -p 2222
+nc localhost 2222
+
+# View logs
+cat honeypot/logs/honeypot.log
+cat honeypot/logs/connections.jsonl
+```
